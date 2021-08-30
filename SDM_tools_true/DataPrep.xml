@@ -1,0 +1,65 @@
+<tool id="SDM_prep" name="Prepare data" version="@VERSION@">
+    <description>for building SDM</description>
+    <macros>
+        <import>SDM_macros.xml</import>
+    </macros>
+    <expand macro="dataprep_requirements"/>
+    <command detect_errors="exit_code"><![CDATA[
+        Rscript 
+         '$__tool_directory__/00.datapreparation.R'
+         '$__tool_directory__/FunctSDMGalaxy.r'
+         #for $i, $s in enumerate($envir)
+             env_data_$i
+             present_path= '${s.present}'
+             future_path= '${s.future}'
+             #set names = '>!<'.join([str($n.display_name) for $n in $s.future])
+             future_filename '${names}'
+         #end for
+         #for $key in $species.keys()
+             --species_filename $key
+             --file_species $species[$key]
+         #end for
+         '$report'
+         '$outputs'
+    ]]>
+    </command>
+    <inputs>
+        <param name="species" type="data_collection" label="Species data" help=""/>
+        <repeat name="envir" title="Environmental data" min="1">
+            <param name="present" type="data" label="Present data" help=""/>
+            <param name="future" type="data" label="Future data" multiple="true" help=""/>
+        </repeat>
+        <!--<param name="climate" type="data" label="Climate data" help=".zip"/>
+        <param name="fclimate" type="data" label="Future climate data" help=".zip"/>
+        <param name="forest" type="data" label="Forest data" help=""/>
+        <param name="fforest" type="data" label="Future forest data" help=""/>-->
+    </inputs>
+    <outputs>
+       <data name="report" from_work_dir="" format="txt"/>
+       <collection type="list" name="outputs">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)" visible="false" directory="data/"/>
+       </collection>
+    </outputs>
+    <tests>
+    </tests>
+    <edam_topics>
+       <edam_topic>topic_0610</edam_topic>
+       <edam_topic>topic_3050</edam_topic>
+    </edam_topics>
+    <help><![CDATA[
+=========================
+Prepare data to build SDM
+=========================
+
+**What it does**
+
+**Input description**
+
+**Output**
+
+**Source**
+
+  ]]></help>
+
+  <expand macro="SDM_bibref" />
+</tool>

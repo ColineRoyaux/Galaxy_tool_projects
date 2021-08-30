@@ -1,0 +1,20 @@
+<macros>
+    <token name="@VERSION@">0.0.1</token>
+    <xml name="dataprep_requirements">
+        <requirements>
+            <requirement type="package" version="3.4_5">r-raster</requirement>
+            <requirement type="package" version="1.5_19">r-rgdal</requirement>
+        </requirements>    
+    </xml>
+    <xml name="SDM_bibref">
+        <citations>
+            <citation type="bibtex">
+	    @unpublished{,
+	    title={},
+            author={Boris Leroy},
+            url={}
+            }
+            </citation>
+        </citations>
+    </xml>
+</macros>
