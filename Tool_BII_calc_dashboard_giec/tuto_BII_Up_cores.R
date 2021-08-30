@@ -7,14 +7,61 @@ suppressMessages(library(raster)) # for working with raster data
 suppressMessages(library(geosphere)) # calculating geographic distance between sites
 suppressMessages(library(foreach)) # running loops
 suppressMessages(library(doParallel)) # running loops in parallel
+suppressMessages(library(ggplot2)) # nice plots
 
 args = commandArgs(trailingOnly=TRUE)
-stop("lol")
+
+## Get land use data
+unzip(args[2], exdir = "land_use")
+#stop(list.dirs(getwd(), recursive = TRUE))
+
+files_zip <- grep(".zip$", list.files("land_use", recursive = TRUE, full.names = TRUE), value = TRUE)
+
+if(!is.null(files_zip)) {
+    l <- lapply(files_zip, 
+                function(x) {
+                    unzip(x, exdir = "land_use/layers")
+                })
+}
+
+files_G <- grep(".bil$", list.files("land_use/layers", recursive = TRUE, full.names = TRUE), value = TRUE)
+
+rast_from_files <- lapply(files_G, #Try to create a raster from each listed files
+                          function(x) {
+                            r <- tryCatch(raster(x), error = function(e) {}) #Need to clear the  stdout/stderr
+                            return(r)
+                          })
+
+rast_names <- lapply(rast_from_files,
+                     function(x) {
+                       return(names(x))
+                     })
+
+names(rast_from_files) <- substr(rast_names, 1, 3)
+
+dir.create("land_use/plots")
+
+rast_red_f <- lapply(rast_from_files,
+                     function (x) {
+                       ## Global rasters are too big we need to get a smaller extent to have a data frame < 500Mb: Europe extent(-11, 50, 35, 60), paleartic west extent(-15, 50, 40, 70), France extent(-5, 10, 41, 52), retained extent(-11, 42, 36, 60), Americas extent(-160, -20, -60, 65)
+                       rast_red <- crop(x, extent(-11, 50, 35, 70))
+                       rast_df<- as.data.frame(rast_red, xy=TRUE)
+                       names(rast_df) <- c("x", "y", "layer")
+                       p <- ggplot(data = rast_df) +
+                            geom_raster(mapping=aes(x=x, y=y, fill=layer)) +
+                            scale_fill_gradientn(colours= rev(terrain.colors(10)), name = paste0(substr(names(x), 1, 3), " landuse proportion"), na.value = "sky blue") +
+                            theme(panel.background = element_blank(), panel.grid = element_line(colour = TRUE))
+                      ggsave(paste0("land_use/plots/plot_init_", substr(names(x), 1, 3),".png"), p, width = 25, height = 15, units = "cm")
+                      return(rast_red)
+       }
+)
+
+
 # read in the data
 diversity <- readRDS(args[1]) %>%
   
   # now let's filter out just the data for the Americas
-  filter(UN_region == "Americas")
+  filter(UN_region == "Europe")
 
 glimpse(diversity)
 
@@ -286,7 +333,8 @@ newdata_ab <- data.frame(LandUse = levels(abundance_data$LandUse)) %>%
   # then square the predictions (because we modelled the square root of abundance, so we have to back-transform it to get the real predicted values)
   mutate(ab_m_preds = predict(ab_m, ., re.form = NA) ^ 2)
 
-stop(newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Primary minimal'])
+#stop(newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Primary minimal'])
+
 # now the compositional similarity model
 
 # set up a function to calculate the inverse logit of the adjusted logit function we used
@@ -307,80 +355,108 @@ newdata_cd <- data.frame(Contrast = levels(cd_data$Contrast),
 
 
 # generate a dataframe with random numbers for the cell values for each land-use class
-lus <- data.frame(pri_min = rnorm(25, mean = 50, sd = 25),
-                  pri = rnorm(25, mean = 100, sd = 25),
-                  plant = rnorm(25, mean = 100, sd = 25),
-                  sec = rnorm(25, mean = 300, sd = 25),
-                  crop = rnorm(25, mean = 1000, sd = 25),
-                  pas = rnorm(25, mean = 400, sd = 25),
-                  urb = rnorm(25, mean = 50, sd = 25)
-                  )
+#lus <- data.frame(pri_min = rnorm(25, mean = 50, sd = 25),
+ #                 pri = rnorm(25, mean = 100, sd = 25),
+  #                plant = rnorm(25, mean = 100, sd = 25),
+   #               sec = rnorm(25, mean = 300, sd = 25),
+    #              crop = rnorm(25, mean = 1000, sd = 25),
+     #             pas = rnorm(25, mean = 400, sd = 25),
+      #            urb = rnorm(25, mean = 50, sd = 25)
+       #           )
 
 # let's artificially make the first cell dominated by urban land and the last cell dominated by minimally-used primary vegetation
-lus$urb[1] <- 2000
-lus$pri_min[25] <- 2000
+#lus$urb[1] <- 2000
+#lus$pri_min[25] <- 2000
 
-lus <- lus %>%
+#lus <- lus %>%
   # calculate the row totals
-  mutate(tot = rowSums(.)) %>%
+ # mutate(tot = rowSums(.)) %>%
   
   # now, for each land use, divide the value by the rowsum
   # this will give us the proportion of each land use in each cell
-  transmute_at(1:7, list(~ ./tot))
+  #transmute_at(1:7, list(~ ./tot))
 
 # double check that the proportions of each land use sum to 1 (accounting for rounding errors)
-cat("Does the proportions of each land use sum up to 1 ?", all(zapsmall(rowSums(lus)) == 1), "If FALSE, there must be a problem")
+#cat("Does the proportions of each land use sum up to 1 ?", all(zapsmall(rowSums(lus)) == 1), "If FALSE, there must be a problem")
 
 
 # for each column of lus (i.e., each land use)
-for(i in 1:ncol(lus)){
+#for(i in 1:ncol(lus)){
   
   # take the column and turn it into a 5 x 5 matrix
-  ras <- matrix(lus[ , i], nrow = 5, ncol = 5) %>%
+ # ras <- matrix(lus[ , i], nrow = 5, ncol = 5) %>%
     # turn that into a raster
-    raster()
+  #  raster()
   
   # come up with a name for the object to hold that raster
-  nm <- paste(names(lus)[i], "raster", sep = "_")
+  #nm <- paste(names(lus)[i], "raster", sep = "_")
   
   # and assign the raser to that name
-  assign(x = nm, value = ras)
+  #assign(x = nm, value = ras)
   
-}
+#}
 
-stop(pri_min_raster)
+#stop(pri_min_raster)
+#plot(urb_raster)
+#png(paste0(getwd(), "raster_urban_land.png"), width = 550, height = 550, res = 300)
 
-plot(urb_raster)
-png(paste0(getwd(), "raster_urban_land.png"), width = 550, height = 550, res = 300)
-
-ab_raster <- (newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Primary minimal'] * pri_min_raster + 
-  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Primary vegetation'] * pri_raster + 
-  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Plantation forest'] * plant_raster +
-  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Secondary vegetation'] * sec_raster +
-  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Cropland'] * crop_raster +
-  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Pasture'] * pas_raster +
-  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Urban'] * urb_raster) /
+ab_raster <- (newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Primary vegetation'] * rast_red_f$PRI + 
+  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Secondary vegetation'] * rast_red_f$SEC +
+  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Cropland'] * rast_red_f$CRP +
+  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Pasture'] * rast_red_f$PAS +
+  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Urban'] * rast_red_f$URB) /
   
   # divide by the reference value
   newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Primary minimal']
 
 
-cd_raster <- (newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Primary minimal'] * pri_min_raster + 
-  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Primary vegetation'] * pri_raster + 
-  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Plantation forest'] * plant_raster + 
-  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Secondary vegetation'] * sec_raster +
-  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Cropland'] * crop_raster +
-  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Pasture'] * pas_raster +
-  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Urban'] * urb_raster) /
+#ab_raster <- (newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Primary minimal'] * pri_min_raster + 
+ # newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Primary vegetation'] * pri_raster + 
+  #newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Plantation forest'] * plant_raster +
+#  newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Secondary vegetation'] * sec_raster +
+ # newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Cropland'] * crop_raster +
+  #newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Pasture'] * pas_raster +
+  #newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Urban'] * urb_raster) /
+  
+  # divide by the reference value
+  #newdata_ab$ab_m_preds[newdata_ab$LandUse == 'Primary minimal']
+
+cd_raster <- (newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Primary vegetation'] * rast_red_f$PRI + 
+  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Secondary vegetation'] * rast_red_f$SEC +
+  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Cropland'] * rast_red_f$CRP +
+  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Pasture'] * rast_red_f$PAS +
+  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Urban'] * rast_red_f$URB) /
   
   # divide by the reference value
   newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Primary minimal']
 
+#cd_raster <- (newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Primary minimal'] * pri_min_raster + 
+ # newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Primary vegetation'] * pri_raster + 
+  #newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Plantation forest'] * plant_raster + 
+#  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Secondary vegetation'] * sec_raster +
+ # newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Cropland'] * crop_raster +
+  #newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Pasture'] * pas_raster +
+#  newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Urban'] * urb_raster) /
+  
+  # divide by the reference value
+ # newdata_cd$cd_m_preds[newdata_cd$Contrast == 'Primary minimal-Primary minimal']
+
 bii <- ab_raster * cd_raster
-plot(bii * 100)
-png(paste0(getwd(), "BII.png"), width = 550, height = 550, res = 300)
+#plot(bii * 100)
+#png(paste0(getwd(), "BII.png"), width = 550, height = 550, res = 300)
 
+biib <- bii * 100
+#plot(biib)
 
+bii_crop <- crop(biib, extent(-11, 50, 35, 70))
+
+bii_rast <- as.data.frame(bii_crop, xy=TRUE)
+
+pl <- ggplot(data = bii_rast)+
+      geom_raster(mapping=aes(x=x, y=y, fill=layer))+
+      scale_fill_gradientn(colours= rev(terrain.colors(10)), name='BII', na.value = "sky blue") +
+      theme(panel.background = element_blank(), panel.grid = element_line(colour = TRUE))
+ggsave("BII.png", pl, width = 25, height = 15, units = "cm")
 #utils::sessionInfo()
 
 
