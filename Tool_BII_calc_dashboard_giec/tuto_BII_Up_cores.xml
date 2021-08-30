@@ -1,0 +1,48 @@
+<tool id="tool_BII_up" name="Compute BII from RDS file on max cores" version="0.0">
+    <description></description> 
+    <requirements>
+        <requirement type="package" version="1.0.7">r-dplyr</requirement>
+        <requirement type="package" version="1.1.3">r-tidyr</requirement>
+        <requirement type="package" version="2.0.1">r-magrittr</requirement>
+        <requirement type="package" version="1.1_27.1">r-lme4</requirement>
+        <requirement type="package" version="3.0_11">r-car</requirement>
+        <requirement type="package" version="3.4_13">r-raster</requirement>
+        <requirement type="package" version="1.5_10">r-geosphere</requirement>
+        <requirement type="package" version="1.5.1">r-foreach</requirement>
+        <requirement type="package" version="1.0.16">r-doparallel</requirement>
+    </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+        Rscript
+         '$__tool_directory__/tuto_BII_Up_cores.R'
+         '$input'
+         '$sum_abund_model'
+         '$sum_sim_model'
+         '$urb_raster'
+         '$bii'
+    ]]>
+    </command>
+    <inputs>
+        <param name="input" type="data" label="Input rds"/>
+    </inputs>
+    <outputs>
+        <data name="sum_abund_model" from_work_dir="abundance_model.txt" format="txt" label="Abundance model summary"/>
+        <data name="sum_sim_model" from_work_dir="similarity_model.txt" format="txt" label="Similarity model summary"/>
+        <data name="urb_raster" from_work_dir="raster_urban_land.png" format="png" label="Urban raster"/>
+        <data name="bii" from_work_dir="BII.png" format="png" label="Biodiversity Intactness Index map"/>
+    </outputs>
+    <tests>
+        <test>
+        </test>
+    </tests>
+    <help><![CDATA[
+**HELP**
+    ]]></help>
+    <citations>
+        <citation type="bibtex">
+        @unpublished{template,
+        title={ Tool },
+        author={Coline Royaux}
+        }
+        </citation>
+    </citations>
+</tool>
