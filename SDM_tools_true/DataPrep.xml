@@ -11,6 +11,7 @@
          #for $i, $s in enumerate($envir)
              env_data_$i
              present_path= '${s.present}'
+             present_filename '${s.present.display_name}'
              future_path= '${s.future}'
              #set names = '>!<'.join([str($n.display_name) for $n in $s.future])
              future_filename '${names}'
@@ -20,14 +21,16 @@
              --file_species $species[$key]
          #end for
          '$report'
-         '$outputs'
+         '$outputs_species'
+         '$outputs_present'
+         '$outputs_future'
     ]]>
     </command>
     <inputs>
         <param name="species" type="data_collection" label="Species data" help=""/>
         <repeat name="envir" title="Environmental data" min="1">
             <param name="present" type="data" label="Present data" help=""/>
-            <param name="future" type="data" label="Future data" multiple="true" help=""/>
+            <param name="future" type="data" label="Future data" multiple="true" help="Be careful to use future projections that occur on same time series"/>
         </repeat>
         <!--<param name="climate" type="data" label="Climate data" help=".zip"/>
         <param name="fclimate" type="data" label="Future climate data" help=".zip"/>
@@ -36,8 +39,14 @@
     </inputs>
     <outputs>
        <data name="report" from_work_dir="" format="txt"/>
-       <collection type="list" name="outputs">
-            <discover_datasets pattern="(?P&lt;designation&gt;.+)" visible="false" directory="data/"/>
+       <collection type="list" name="outputs_species" label="Species occurence rasters">
+            <discover_datasets pattern="occurrences_(?P&lt;designation&gt;.+)" visible="false" directory="data/"/>
+       </collection>
+       <collection type="list" name="outputs_present" label="Present raster stack">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)" visible="false" directory="data/present/"/>
+       </collection>
+       <collection type="list" name="outputs_future" label="Future rasters combinations">
+            <discover_datasets pattern="(?P&lt;designation&gt;.+)" visible="false" directory="data/future/"/>
        </collection>
     </outputs>
     <tests>

@@ -5,6 +5,9 @@
             <requirement type="package" version="3.4_5">r-raster</requirement>
             <requirement type="package" version="1.5_19">r-rgdal</requirement>
             <requirement type="package" version="1.5.1">r-virtualspecies</requirement>
+            <requirement type="package" version="3.9.2">r-gtools</requirement>
+            <requirement type="package" version="1.5.1">r-foreach</requirement>
+            <requirement type="package" version="1.0.16">r-doparallel</requirement>
         </requirements>    
     </xml>
     <xml name="SDM_bibref">
