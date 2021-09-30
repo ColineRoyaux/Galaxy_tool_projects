@@ -3,6 +3,7 @@
 #suppressMessages(library(virtualspecies))
 
 ## !!!! TO DO Write the help section of the XML
+## !!!! TO DO if the user already has its species occurence data as a raster just make the manipulation to crop and resample
 
 #https://biogeo.ucdavis.edu/data/worldclim/v2.1/fut/10m/wc2.1_10m_bioc_CNRM-ESM2-1_ssp585_2021-2040.zip
 #https://biogeo.ucdavis.edu/data/worldclim/v2.1/fut/10m/wc2.1_10m_bioc_CNRM-ESM2-1_ssp126_2021-2040.zip
