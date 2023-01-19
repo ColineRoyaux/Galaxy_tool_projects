@@ -1,0 +1,8 @@
+Exact test of population genetic differentiation : 
+
+Performed on  52 individuals of 6 different haplotypes sampled in 6 populations. 
+
+p-value = 0.000499750124937531 
+
+Significative test under 1%, haplotype composition is likely different between populations !
+However, check for potential bias in your data before making any conclusion.
