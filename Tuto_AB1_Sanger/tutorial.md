@@ -26,7 +26,7 @@ contributors:
 
 # Introduction
 
-<!-- This is a comment. -->
+<!-- This is a comment. 
 
 General introduction about the topic and then an introduction of the
 tutorial (the questions and the objectives). It is nice also to have a
@@ -79,7 +79,7 @@ Anywhere you find the word "***TODO***", there is something that needs to be cha
 depending on the specifics of your tutorial.
 
 have fun!
-
+-->
 ## Get data
 
 > <hands-on-title> Data Upload </hands-on-title>
@@ -117,18 +117,9 @@ have fun!
 >
 {: .hands_on}
 
-
-
-> 5. Add to each database a tag corresponding to ...
->
->    {% snippet faqs/galaxy/datasets_add_tag.md %}
-
-
-
-
 # Prepare primer data
 
-It comes first a description of the step: some background and some theory.
+<!--It comes first a description of the step: some background and some theory.
 Some image can be added there to support the theory explanation:
 
 ![Alternative text](../../images/image_name "Legend of the image")
@@ -144,7 +135,7 @@ The idea is to keep the theory description before quite simple to focus more on 
 {: .details}
 
 A big step can have several subsections or sub steps:
-
+-->
 
 ## Separate and format primers files
 
