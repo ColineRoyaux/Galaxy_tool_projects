@@ -109,23 +109,6 @@ Authors of {% cite Garavaglia2022 %} have shared openly their raw AB1 files on Z
 {: .hands_on}
 
 # Prepare primer data
-<!--It comes first a description of the step: some background and some theory.
-Some image can be added there to support the theory explanation:
-
-![Alternative text](../../images/image_name "Legend of the image")
-
-The idea is to keep the theory description before quite simple to focus more on the practical part.
-
-***TODO***: *Consider adding a detail box to expand the theory*
-
-> <details-title> More details about the theory </details-title>
->
-> But to describe more details, it is possible to use the detail boxes which are expandable
->
-{: .details}
-
-A big step can have several subsections or sub steps:
--->
 
 ## Separate and format primers files
 
@@ -153,7 +136,7 @@ Primers must be separated in distinct files because sense (forward) and antisens
 >
 {: .hands_on}
 
-In this previous hands-on, the step of removing eventual gaps (```-``` in the FASTA files) is a precaution, there are no gaps in our primers file. However, it is important to remove gaps at this point in case you are using different data, otherwise some steps of the tutorial could fail (e.g. alignment).
+In this previous hands-on, the step of removing eventual gaps (`-` in the FASTA files) is a precaution, there are no gaps in our primers file. However, it is important to remove gaps at this point in case you are using different data, otherwise some steps of the tutorial could fail (e.g. alignment).
 
 This following hands-on is to be applied only on the sequence of the antisense (reverse) primer. 
 
@@ -161,11 +144,10 @@ This following hands-on is to be applied only on the sequence of the antisense (
 >
 > 1. {% tool [Reverse-Complement](toolshed.g2.bx.psu.edu/repos/devteam/fastx_reverse_complement/cshl_fastx_reverse_complement/1.0.2+galaxy0) %} the sequence antisense (reverse) primer with the following parameters:
 >    - {% icon param-file %} *"Input file in FASTA or FASTQ format"*: `Degap.seqs #Reverse FASTA output` (output of **Degap.seqs** {% icon tool %})
->
+> 
+> See in the introduction for explanations on the Reverse-Complement.
+> 
 {: .hands_on}
-
-Here, each nucleotide have been replaced by their complementary nucleotide (G-C and T-A), and the order of nucleotides in the sequence has been inverted (e.g. first nucleotide is in last position). This manipulation permits to get all sequences in the same orientation for alignment.
-
 
 # Prepare sequence data
 
@@ -192,8 +174,9 @@ Here, each nucleotide have been replaced by their complementary nucleotide (G-C 
 From now on, we'll be working a lot on data collections:
 {% snippet faqs/galaxy/tools_select_collection.md %}
 
-
 ## Filter collection to separate sense and antisense sequence files
+
+As for primers, sense and antisense sequences will be subjected to slightly different procedures so they must be separated in distinct data collections.
 
 > <hands-on-title> Filter </hands-on-title>
 >
@@ -226,24 +209,32 @@ From now on, we'll be working a lot on data collections:
 >    - {% icon param-collection %} *"Input Collection*: `output collection` (output of **Unzip** {% icon tool %})
 >    - *"How should the elements to remove be determined?"*: `Remove if identifiers are ABSENT from file`
 >        - {% icon param-file %} *"Filter out identifiers absent from"*: `#Forward files list` (output of **Regex Find And Replace** {% icon tool %})
+>    - Tag output with "#Forward"
 >
 > 5. {% tool [Filter collection](__FILTER_FROM_FILE__) %} with the following parameters:
 >    - {% icon param-collection %} *"Input Collection*: `output collection` (output of **Unzip** {% icon tool %})
 >    - *"How should the elements to remove be determined?"*: `Remove if identifiers are ABSENT from file`
 >        - {% icon param-file %} *"Filter out identifiers absent from"*: `#Reverse files list` (output of **Regex Find And Replace** {% icon tool %})
+>    - Tag output with "#Reverse"
 >
 >    > <comment-title> What's happening in this section? </comment-title>
 >    >
 >    > First step: Extracting the list of file names in the data collection
->    > Second step: Removing file names with a "F" and "AOPEP" in their name -> creating a list of antisense (reverse) sequence files of the marker CH8
->    > Third step: Removing file names with a "R" and "AOPEP" in their name -> creating a list of sense (forward) sequence files of the marker CH8
+>    > Second step: Removing file names containing a "F" and "AOPEP" -> creating a list of antisense (reverse) sequence files of the marker CHD8
+>    > Third step: Removing file names containing a "R" and "AOPEP" -> creating a list of sense (forward) sequence files of the marker CHD8
 >    > Fourth and fifth step: Select files in the collection -> creating two distinct collections with sense (forward) sequence files on one hand and antisense (reverse) sequence file on the other hand
+>    >
+>    > For the second and third step, we used regular expressions (Regex):
+>    > {% snippet  faqs/galaxy/analysis_regular_expressions.md %}
+>    > With `[A-Za-z0-9_-]` meaning any character between A to Z, a to z, 0 to 9 or _ or -, the following `+` meaning that any of these characters are found once or more. 
 >    > 
 >    {: .comment}
 >
 {: .hands_on}
 
 ## Convert AB1 sequence files to FASTQ and trim low-quality ends
+
+In Sanger sequencing, ends tend to be of low trust levels (each nucleotide has a quality score reflecting this trust level), it is important to delete these sections of the sequences to ensure wrong nucleotides aren't introduced in the sequences. 
 
 > <hands-on-title> AB1 to FASTQ files and trim low quality ends </hands-on-title>
 > 
@@ -252,7 +243,9 @@ From now on, we'll be working a lot on data collections:
 > 1. {% tool [ab1 to FASTQ converter](toolshed.g2.bx.psu.edu/repos/ecology/ab1_fastq_converter/ab1_fastq_converter/1.20.0) %} with the following parameters:
 >    - {% icon param-collection %} *"Input ab1 file"*: `(filtered) output collection` (output of **Filter collection** {% icon tool %})
 >    - *"Do you want trim ends according to quality scores ?"*: `No, use full sequences.`
->
+> 
+> In this tool, it is possible to trim low-quality ends along with the conversion of the file but parametrization is less precise.
+> 
 > 2. {% tool [seqtk_trimfq](toolshed.g2.bx.psu.edu/repos/iuc/seqtk/seqtk_trimfq/1.3.1) %} with the following parameters:
 >    - {% icon param-collection %} *"Input FASTA/Q file"*: `output collection` (output of **ab1 to FASTQ converter** {% icon tool %})
 >    - *"Mode for trimming FASTQ File"*: `Quality`
@@ -262,7 +255,9 @@ From now on, we'll be working a lot on data collections:
 
 ## Compute reverse complement sequence for antisense (reverse) sequences only 
 
-> <hands-on-title> Task description </hands-on-title>
+See in the introduction for explanations on the Reverse-Complement.
+
+> <hands-on-title> Reverse complement </hands-on-title>
 >
 > 1. {% tool [FASTQ Groomer](toolshed.g2.bx.psu.edu/repos/devteam/fastq_groomer/fastq_groomer/1.1.5) %} with the following parameters:
 >    - {% icon param-collection %} *"File to groom"*: `output collection` (output of **seqtk_trimfq** {% icon tool %})
@@ -271,7 +266,7 @@ From now on, we'll be working a lot on data collections:
 >
 >    > <comment-title> What is this step? </comment-title>
 >    >
->    > It is just a necessary step to get the right input format for the following step **Reverse-Complement** {% icon tool %}
+>    > It is a necessary step to get the right input format for the following step **Reverse-Complement** {% icon tool %}
 >    {: .comment}
 >
 > 2. {% tool [Reverse-Complement](toolshed.g2.bx.psu.edu/repos/devteam/fastx_reverse_complement/cshl_fastx_reverse_complement/1.0.2+galaxy0) %} with the following parameters:
@@ -298,13 +293,13 @@ From now on, we'll be working a lot on data collections:
 >    - {% icon param-file %} *"Input FASTA/Q file #1"*: `output` (output of **Sort collection** {% icon tool %})
 >    - {% icon param-file %} *"Input FASTA/Q file #2"*: `output` (output of **Sort collection** {% icon tool %})
 >
-> Check there is two sequences in each three files of the newly-created collection
+> Check there is two sequences in each three files of the newly-created collection.
 >
 {: .hands_on}
 
 ## Convert FASTQ files to FASTA
 
-> <hands-on-title> Task description </hands-on-title>
+> <hands-on-title> FASTQ to FASTA </hands-on-title>
 >
 > 1. {% tool [FASTQ Groomer](toolshed.g2.bx.psu.edu/repos/devteam/fastq_groomer/fastq_groomer/1.1.5) %} with the following parameters:
 >    - {% icon param-collection %} *"File to groom"*: `default` (output of **seqtk_mergepe** {% icon tool %})
@@ -313,7 +308,8 @@ From now on, we'll be working a lot on data collections:
 >
 >    > <comment-title> What is this step? </comment-title>
 >    >
->    > It is just a necessary step to get the right input format for the following step **FASTQ to FASTA** {% icon tool %}
+>    > It is a necessary step to get the right input format for the following step **FASTQ to FASTA** {% icon tool %}
+>    > 
 >    {: .comment}
 >
 > 1. {% tool [FASTQ to FASTA](toolshed.g2.bx.psu.edu/repos/devteam/fastq_to_tabular/fastq_to_tabular/1.1.5) %} with the following parameters:
@@ -347,7 +343,37 @@ From now on, we'll be working a lot on data collections:
 >
 {: .hands_on}
 
-# Primers AND sequences 
+When you have the consensus sequences, you can check if any ambiguous nucleotide is to be found in the sequences. If you find such nucleotides, it means different nucleotides were found in the sense and antisense sequence at the same position, some checks are needed.
+
+> <details-title>Ambiguous nucleotide correspondance</details-title>
+>
+> Y = C or T
+> R = A or G
+> W = A or T
+> S = G or C
+> K = T or G
+> M = C or A
+>
+{: .details}
+
+> <hands-on-title> Look for ambiguous nucleotide </hands-on-title>
+>
+> 1. Click on output of **Merge.files** {% icon tool %} in the history to expand it
+>
+> 2. Click on {% icon galaxy-barchat %} Visualize
+>
+> 3. Select **Multiple Sequence Alignment**
+> 
+> 4. Set color scheme to `Clustal`, ambiguous nucleotides are highlighted in dark blue
+>    
+> 5. There are two nucleotide positions to check, 121 in sequence `consensus_B05_CHD8-III6brother-18` and 286 in sequence `consensus_05_CHD8-III6mother-18`
+>
+> 6. You need to go back to your FASTQ sequences to understand!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+>
+{: .hands_on}
+
+
+# Manage primers and sequences 
 
 ## Merge and align consensus sequences file and primer files
 
@@ -366,7 +392,12 @@ From now on, we'll be working a lot on data collections:
 >
 >    > <comment-title> What's going on in this second step? </comment-title>
 >    >
->    > Sometimes, **Merge.files** {% icon tool %} doesn't keep line feed between the sequences, this step permits to correct it and get a FASTA file that is formatted properly 
+>    > Sometimes, **Merge.files** {% icon tool %} doesn't keep linefeed between the files, this step permits to correct it and get a FASTA file that is formatted properly.
+>    > 
+>    > For the second step, we used regular expressions (Regex):
+>    > {% snippet  faqs/galaxy/analysis_regular_expressions.md %}
+>    > With `[A-Z-]` meaning any character between A to Z or -, `\1` repeat the character chain between brackets in the *"Find Regex"* section, `\n` meaning a line-feed. 
+>    > 
 >    {: .comment}
 >
 {: .hands_on}
@@ -380,7 +411,7 @@ From now on, we'll be working a lot on data collections:
 >
 {: .hands_on}
 
-## Check your sequencing hasn't been contaminated and your sequence belongs to the right group by computing a BLAST on the NCBI database
+## Check your samples hasn't been contaminated and your sequence belongs to the right group by computing a BLAST on the NCBI database
 
 > <hands-on-title> NVBI Blast </hands-on-title>
 >
