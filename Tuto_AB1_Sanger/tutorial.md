@@ -21,7 +21,7 @@ contributors:
 
 The objective of this tutorial is to learn how to clean and manage AB1 data files freshly obtained from Sanger sequencing. 
 This kind of sequencing is targeting a specific sequence with short single DNA strands called primers. These primers are delimiting ends of the targeted marker.
-Usually, one gets two .ab1 files for each sample, representing the forward and the reverse strands of DNA.
+Usually, one gets two .ab1 files for each sample, representing the sense (forward) and the antisense (reverse) strands of DNA.
 
 Here, we'll be using raw data from {% cite Garavaglia2022 %}.
 In this article, two DNA markers are investiguated CHD8 (Chromodomain-helicase-DNA-binding protein 8) and AOPEP (Aminopeptidase O Putative).
@@ -30,17 +30,36 @@ We'll focus on CHD8 sequences but you can try to apply the same steps on the AOP
 In the first section of the tutorial, we'll be preparing primer's data by:
 - selecting the right primer sequences with the identifier;
 - removing eventual gaps included in the sequences;
-- and compute the reverse-complement sequence for the reverse primer (allowing to align forward and reverse sequences together).
+- and compute the reverse-complement sequence for the antisense primer only.
 
 In the second section of the tutorial, we'll be preparing the Sanger sequences data by:
-- extracting ab1 files of the interest sequence (CHD8) and separating forward and reverse sequences in two distinct data collections;
+- extracting ab1 files of the interest sequence (CHD8) and separating sense and antisense sequences in two distinct data collections;
 - converting ab1 files to FASTQ to permit its use in the following tools;
 - trimming low quality ends of the sequences;
-- compute the reverse-complement for the reverse sequence only;
-- align forward and reverse sequences;
-- obtain a consensus sequence (which results the correspondance between nucleotides of the forward and the reverse sequences) for each three samples.
+- compute the reverse-complement for the antisense sequence only;
+- align sense and antisense sequences;
+- obtain a consensus sequence (which results the correspondance between nucleotides of the sense and the antisense sequences) for each three samples.
 
 In the third section of the tutorial, primers and all consensus sequences are finally merged into a single file to be aligned and verified.
+
+> <details-title>What is the reverse-complement sequence and why computing it for the antisense sequence?</details-title>
+>
+> Consider a double-strand DNA molecule with the following sequences:
+> ![Double-strand DNA](../../images/Sanger_tuto/Double-strand_DNA.png "Double-strand DNA")
+> 
+> When sequencing, each strand of DNA are read separately in the 5'-3' orientation. Hence, in the sequence files each strand are provided as:
+> ![Single-strand DNA sequences in output file](../../images/Sanger_tuto/two_single-strand_sequences.png "Single-strand DNA sequences in output file")
+>
+> To get the antisense sequence in its original orientation, the reverse sequence is computed:
+> ![Reversed antisense sequence](../../images/Sanger_tuto/Reversed-antisense-sequence.png "Reversed antisense sequence")
+>
+> To align sense and antisense sequence, the complement sequence of the reversed antisense sequence is computed:
+> ![Reverse-complement antisense sequence](../../images/Sanger_tuto/Reversed-antisense-sequence.png "Reversed antisense sequence")
+>
+> The two sequences can be aligned now:
+> ![Aligned sense and antisense sequences](../../images/Sanger_tuto/Aligned_sense_antisense.png "Aligned sense and antisense sequences")
+>
+{: .details}
 
 > <agenda-title></agenda-title>
 >
@@ -50,28 +69,8 @@ In the third section of the tutorial, primers and all consensus sequences are fi
 > {:toc}
 >
 {: .agenda}
-<!--
-# Title for your first section
 
-Give some background about what the trainees will be doing in the section.
-Remember that many people reading your materials will likely be novices,
-so make sure to explain all the relevant concepts.
 
-## Title for a subsection
-Section and subsection titles will be displayed in the tutorial index on the left side of
-the page, so try to make them informative and concise!
-
-# Hands-on Sections
-Below are a series of hand-on boxes, one for each tool in your workflow file.
-Often you may wish to combine several boxes into one or make other adjustments such
-as breaking the tutorial into sections, we encourage you to make such changes as you
-see fit, this is just a starting point :)
-
-Anywhere you find the word "***TODO***", there is something that needs to be changed
-depending on the specifics of your tutorial.
-
-have fun!
--->
 # Get data
 
 Authors of {% cite Garavaglia2022 %} have shared openly their raw AB1 files on Zenodo.
@@ -130,7 +129,7 @@ A big step can have several subsections or sub steps:
 
 ## Separate and format primers files
 
-Primers must be separated in distinct files because forward and reverse primers won't be subjected to the same formating.
+Primers must be separated in distinct files because sense (forward) and antisense (reverse) primers won't be subjected to the same formating.
 
 > <hands-on-title> Create separate files for each primer </hands-on-title>
 >
@@ -156,11 +155,11 @@ Primers must be separated in distinct files because forward and reverse primers 
 
 In this previous hands-on, the step of removing eventual gaps (```-``` in the FASTA files) is a precaution, there are no gaps in our primers file. However, it is important to remove gaps at this point in case you are using different data, otherwise some steps of the tutorial could fail (e.g. alignment).
 
-This following hands-on is to be applied only on the sequence of the Reverse primer. 
+This following hands-on is to be applied only on the sequence of the antisense (reverse) primer. 
 
-> <hands-on-title> Compute Reverse-Complement of the Reverse primer </hands-on-title>
+> <hands-on-title> Compute Reverse-Complement of the antisense (reverse) primer </hands-on-title>
 >
-> 1. {% tool [Reverse-Complement](toolshed.g2.bx.psu.edu/repos/devteam/fastx_reverse_complement/cshl_fastx_reverse_complement/1.0.2+galaxy0) %} the sequence Reverse primer with the following parameters:
+> 1. {% tool [Reverse-Complement](toolshed.g2.bx.psu.edu/repos/devteam/fastx_reverse_complement/cshl_fastx_reverse_complement/1.0.2+galaxy0) %} the sequence antisense (reverse) primer with the following parameters:
 >    - {% icon param-file %} *"Input file in FASTA or FASTQ format"*: `Degap.seqs #Reverse FASTA output` (output of **Degap.seqs** {% icon tool %})
 >
 {: .hands_on}
@@ -194,7 +193,7 @@ From now on, we'll be working a lot on data collections:
 {% snippet faqs/galaxy/tools_select_collection.md %}
 
 
-## Filter collection to separate forward and reverse sequence files
+## Filter collection to separate sense and antisense sequence files
 
 > <hands-on-title> Filter </hands-on-title>
 >
@@ -236,9 +235,9 @@ From now on, we'll be working a lot on data collections:
 >    > <comment-title> What's happening in this section? </comment-title>
 >    >
 >    > First step: Extracting the list of file names in the data collection
->    > Second step: Removing file names with a "F" and "AOPEP" in their name -> creating a list of Reverse sequence files of the marker CH8
->    > Third step: Removing file names with a "R" and "AOPEP" in their name -> creating a list of Forward sequence files of the marker CH8
->    > Fourth and fifth step: Select files in the collection -> creating two distinct collections with Forward sequence files on one hand and Reverse sequence file on the other hand
+>    > Second step: Removing file names with a "F" and "AOPEP" in their name -> creating a list of antisense (reverse) sequence files of the marker CH8
+>    > Third step: Removing file names with a "R" and "AOPEP" in their name -> creating a list of sense (forward) sequence files of the marker CH8
+>    > Fourth and fifth step: Select files in the collection -> creating two distinct collections with sense (forward) sequence files on one hand and antisense (reverse) sequence file on the other hand
 >    > 
 >    {: .comment}
 >
@@ -248,7 +247,7 @@ From now on, we'll be working a lot on data collections:
 
 > <hands-on-title> AB1 to FASTQ files and trim low quality ends </hands-on-title>
 > 
-> Do these steps twice !! We have Froward and Reverse sequence data collections, do these steps starting with each "(filtered)" data collections
+> Do these steps twice !! We have Froward and antisense (reverse) sequence data collections, do these steps starting with each "(filtered)" data collections
 >
 > 1. {% tool [ab1 to FASTQ converter](toolshed.g2.bx.psu.edu/repos/ecology/ab1_fastq_converter/ab1_fastq_converter/1.20.0) %} with the following parameters:
 >    - {% icon param-collection %} *"Input ab1 file"*: `(filtered) output collection` (output of **Filter collection** {% icon tool %})
@@ -261,7 +260,7 @@ From now on, we'll be working a lot on data collections:
 >
 {: .hands_on}
 
-## Compute reverse complement sequence for Reverse sequences only 
+## Compute reverse complement sequence for antisense (reverse) sequences only 
 
 > <hands-on-title> Task description </hands-on-title>
 >
@@ -281,11 +280,11 @@ From now on, we'll be working a lot on data collections:
 >
 {: .hands_on}
 
-## Merge corresponding Forward and Reverse sequences single files
+## Merge corresponding sense and antisense sequences single files
 
 > <hands-on-title> Sort collections </hands-on-title>
 > 
-> Do this step twice !! One has to make sure Forward and Reverse sequences collections are in the same order to get the right forward and the right reverse sequence to be merged together
+> Do this step twice !! One has to make sure sense (forward) and antisense (reverse) sequences collections are in the same order to get the right sense and the right antisense sequence to be merged together
 >
 > 1. {% tool [Sort collection](__SORTLIST__) %} with the following parameters:
 >    - {% icon param-collection %} *"Input Collection"*: `Collection` (output of **seqtk_trimfq** {% icon tool %} & output of **Reverse-Complement** {% icon tool %})
@@ -293,7 +292,7 @@ From now on, we'll be working a lot on data collections:
 >
 {: .hands_on}
 
-> <hands-on-title> Merge Forward and Reverse sequence files </hands-on-title>
+> <hands-on-title> Merge sense (forward) and antisense (reverse) sequence files </hands-on-title>
 >
 > 1. {% tool [seqtk_mergepe](toolshed.g2.bx.psu.edu/repos/iuc/seqtk/seqtk_mergepe/1.3.1) %} with the following parameters:
 >    - {% icon param-file %} *"Input FASTA/Q file #1"*: `output` (output of **Sort collection** {% icon tool %})
