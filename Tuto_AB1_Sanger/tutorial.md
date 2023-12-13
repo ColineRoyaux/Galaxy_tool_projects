@@ -4,22 +4,15 @@ layout: tutorial_hands_on
 title: 'Clean and manage Sanger sequences from raw files to aligned consensus'
 zenodo_link: https://zenodo.org/records/7104640/files/AOPEP_and_CHD8_sequences_20220907.zip?download=1
 questions:
-- Which biological questions are addressed by the tutorial?
-- Which bioinformatics techniques are important to know for this type of data?
+- How to clean Sanger sequencing files?
 objectives:
-- The learning objectives are the goals of the tutorial
-- They will be informed by your audience and will communicate to them and to yourself
-  what you should focus on during the course
-- They are single sentences describing what a learner should be able to do once they
-  have completed the tutorial
-- You can use Bloom's Taxonomy to write effective learning objectives
-time_estimation: 3H
+- Learn how to manage sequencing files (AB1, FASTQ, FASTA)
+- Learn how to clean your Sanger sequences in an automated and reproducible way
+time_estimation: 1H
 key_points:
-- The take-home messages
-- They will appear at the end of the tutorial
+- Check your data and results for mistakes afterward !!!! This procedure is useful but not perfect
 contributors:
-- contributor1
-- contributor2
+- ColineRoyaux
 
 ---
 
@@ -30,7 +23,7 @@ The objective of this tutorial is to learn how to clean and manage AB1 data file
 This kind of sequencing is targeting a specific sequence with short single DNA strands called primers. These primers are delimiting ends of the targeted marker.
 Usually, one gets two .ab1 files for each sample, representing the forward and the reverse strands of DNA.
 
-Here, we'll be using raw data from Garavaglia *et al*., 2022, *Parkinsonism Relat. Disord.* (doi: 10.1016/j.parkreldis.2022.03.007).
+Here, we'll be using raw data from {% cite Garavaglia2022 %}.
 In this article, two DNA markers are investiguated CHD8 (Chromodomain-helicase-DNA-binding protein 8) and AOPEP (Aminopeptidase O Putative).
 We'll focus on CHD8 sequences but you can try to apply the same steps on the AOPEP sequences to practice after the tutorial !
 
@@ -48,31 +41,6 @@ In the second section of the tutorial, we'll be preparing the Sanger sequences d
 - obtain a consensus sequence (which results the correspondance between nucleotides of the forward and the reverse sequences) for each three samples.
 
 In the third section of the tutorial, primers and all consensus sequences are finally merged into a single file to be aligned and verified.
-
-<!-- This is a comment. 
-
-General introduction about the topic and then an introduction of the
-tutorial (the questions and the objectives). It is nice also to have a
-scheme to sum up the pipeline used during the tutorial. The idea is to
-give to trainees insight into the content of the tutorial and the (theoretical
-and technical) key concepts they will learn.
-
-You may want to cite some publications; this can be done by adding citations to the
-bibliography file (`tutorial.bib` file next to your `tutorial.md` file). These citations
-must be in bibtex format. If you have the DOI for the paper you wish to cite, you can
-get the corresponding bibtex entry using [doi2bib.org](https://doi2bib.org).
-
-With the example you will find in the `tutorial.bib` file, you can add a citation to
-this article here in your tutorial like this:
-{% raw %} `{% cite Batut2018 %}`{% endraw %}.
-This will be rendered like this: {% cite Batut2018 %}, and links to a
-[bibliography section](#bibliography) which will automatically be created at the end of the
-tutorial.
-
-
-**Please follow our
-[tutorial to learn how to fill the Markdown]({{ site.baseurl }}/topics/contributing/tutorials/create-new-tutorial-content/tutorial.html)**
--->
 
 > <agenda-title></agenda-title>
 >
@@ -104,7 +72,9 @@ depending on the specifics of your tutorial.
 
 have fun!
 -->
-## Get data
+# Get data
+
+Authors of {% cite Garavaglia2022 %} have shared openly their raw AB1 files on Zenodo.
 
 > <hands-on-title> Data Upload </hands-on-title>
 >
@@ -140,7 +110,6 @@ have fun!
 {: .hands_on}
 
 # Prepare primer data
-
 <!--It comes first a description of the step: some background and some theory.
 Some image can be added there to support the theory explanation:
 
@@ -160,6 +129,8 @@ A big step can have several subsections or sub steps:
 -->
 
 ## Separate and format primers files
+
+Primers must be separated in distinct files because forward and reverse primers won't be subjected to the same formating.
 
 > <hands-on-title> Create separate files for each primer </hands-on-title>
 >
@@ -183,7 +154,9 @@ A big step can have several subsections or sub steps:
 >
 {: .hands_on}
 
+In this previous hands-on, the step of removing eventual gaps (```-``` in the FASTA files) is a precaution, there are no gaps in our primers file. However, it is important to remove gaps at this point in case you are using different data, otherwise some steps of the tutorial could fail (e.g. alignment).
 
+This following hands-on is to be applied only on the sequence of the Reverse primer. 
 
 > <hands-on-title> Compute Reverse-Complement of the Reverse primer </hands-on-title>
 >
@@ -192,6 +165,7 @@ A big step can have several subsections or sub steps:
 >
 {: .hands_on}
 
+Here, each nucleotide have been replaced by their complementary nucleotide (G-C and T-A), and the order of nucleotides in the sequence has been inverted (e.g. first nucleotide is in last position). This manipulation permits to get all sequences in the same orientation for alignment.
 
 
 # Prepare sequence data
