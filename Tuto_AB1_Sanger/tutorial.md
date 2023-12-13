@@ -26,6 +26,29 @@ contributors:
 
 # Introduction
 
+The objective of this tutorial is to learn how to clean and manage AB1 data files freshly obtained from Sanger sequencing. 
+This kind of sequencing is targeting a specific sequence with short single DNA strands called primers. These primers are delimiting ends of the targeted marker.
+Usually, one gets two .ab1 files for each sample, representing the forward and the reverse strands of DNA.
+
+Here, we'll be using raw data from Garavaglia *et al*., 2022, *Parkinsonism Relat. Disord.* (doi: 10.1016/j.parkreldis.2022.03.007).
+In this article, two DNA markers are investiguated CHD8 (Chromodomain-helicase-DNA-binding protein 8) and AOPEP (Aminopeptidase O Putative).
+We'll focus on CHD8 sequences but you can try to apply the same steps on the AOPEP sequences to practice after the tutorial !
+
+In the first section of the tutorial, we'll be preparing primer's data by:
+- selecting the right primer sequences with the identifier;
+- removing eventual gaps included in the sequences;
+- and compute the reverse-complement sequence for the reverse primer (allowing to align forward and reverse sequences together).
+
+In the second section of the tutorial, we'll be preparing the Sanger sequences data by:
+- extracting ab1 files of the interest sequence (CHD8) and separating forward and reverse sequences in two distinct data collections;
+- converting ab1 files to FASTQ to permit its use in the following tools;
+- trimming low quality ends of the sequences;
+- compute the reverse-complement for the reverse sequence only;
+- align forward and reverse sequences;
+- obtain a consensus sequence (which results the correspondance between nucleotides of the forward and the reverse sequences) for each three samples.
+
+In the third section of the tutorial, primers and all consensus sequences are finally merged into a single file to be aligned and verified.
+
 <!-- This is a comment. 
 
 General introduction about the topic and then an introduction of the
@@ -49,6 +72,7 @@ tutorial.
 
 **Please follow our
 [tutorial to learn how to fill the Markdown]({{ site.baseurl }}/topics/contributing/tutorials/create-new-tutorial-content/tutorial.html)**
+-->
 
 > <agenda-title></agenda-title>
 >
@@ -58,7 +82,7 @@ tutorial.
 > {:toc}
 >
 {: .agenda}
-
+<!--
 # Title for your first section
 
 Give some background about what the trainees will be doing in the section.
@@ -90,8 +114,6 @@ have fun!
 >    ```
 >    https://zenodo.org/records/7104640/files/AOPEP_and_CHD8_sequences_20220907.zip?download=1
 >    ```
->    ***TODO***: *Add the files by the ones on Zenodo here (if not added)*
->
 >
 >    {% snippet faqs/galaxy/datasets_import_via_link.md %}
 >
