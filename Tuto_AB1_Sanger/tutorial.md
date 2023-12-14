@@ -336,6 +336,7 @@ See in the introduction for explanations on the Reverse-Complement.
 >
 > 2. {% tool [Consensus sequence from aligned FASTA](toolshed.g2.bx.psu.edu/repos/ecology/aligned_to_consensus/aligned_to_consensus/1.0.0) %} with the following parameters:
 >    - {% icon param-collection %} *"Input fasta file with at least two sequences"*: `aligned_sequences` (output of **Align sequences** {% icon tool %})
+>    - Add tag "#Consensus"
 >
 > 3. {% tool [Merge.files](toolshed.g2.bx.psu.edu/repos/iuc/mothur_merge_files/mothur_merge_files/1.39.5.0) %} with the following parameters:
 >    - *"Merge"*: `fasta files`
@@ -356,7 +357,7 @@ When you have the consensus sequences, you can check if any ambiguous nucleotide
 >
 {: .details}
 
-> <hands-on-title> Look for ambiguous nucleotide </hands-on-title>
+> <hands-on-title> Look for ambiguous nucleotides </hands-on-title>
 >
 > 1. Click on output of **Merge.files** {% icon tool %} in the history to expand it
 >
@@ -366,10 +367,41 @@ When you have the consensus sequences, you can check if any ambiguous nucleotide
 > 
 > 4. Set color scheme to `Clustal`, ambiguous nucleotides are highlighted in dark blue
 >    
-> 5. There are two nucleotide positions to check, 121 in sequence `consensus_B05_CHD8-III6brother-18` and 286 in sequence `consensus_05_CHD8-III6mother-18`
+> 5. There are two nucleotide positions to check, Y at 121 in sequence `consensus_B05_CHD8-III6brother-18` and W at 286 in sequence `consensus_05_CHD8-III6mother-18`
 >
-> 6. You need to go back to your FASTQ sequences to understand!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+> 6. You need to go back to your FASTQ sequences to understand the origin of the ambiguity
 >
+> 7. {% tool [Regex Find And Replace](toolshed.g2.bx.psu.edu/repos/galaxyp/regex_find_replace/regex1/1.0.3) %} with the following parameters:
+>    - {% icon param-file %} *"Select lines from"*: `#Consensus #Forward #Reverse #Primer output` (output of **Regex Find and Replace** {% icon tool %})
+>    - In *"Check"*:
+>        - {% icon param-repeat %} *"Insert Check"*
+>            - *"Find Regex"*: `^[ACTG]+([ACTG]{20}Y)[ACTG]+$`
+>            - *"Replacement"*: `\1`
+>        - {% icon param-repeat %} *"Insert Check"*
+>            - *"Find Regex"*: `^[ACTG]+([ACTG]{20}W)[ACTG]+$`
+>            - *"Replacement"*: `\1`
+> 
+>    > <comment-title> What's going on in this step? </comment-title>
+>    >
+>    > We want to retrieve the 20 nucleotides before the ambiguities.
+>    > 
+>    > We use regular expressions (Regex):
+>    > {% snippet  faqs/galaxy/analysis_regular_expressions.md %}
+>    > With `[ACTG]` meaning any character of the four unambiguous nucleotides followed by `+` meaning "at least once in the character chain" or by {20} meaning "20 times".
+>    > 
+>    {: .comment}
+>
+>      In the output of this tool we get:
+>        - the 20 nucleotides before the Y at position 121 in sequence `consensus_B05_CHD8-III6brother-18`: `CAGGCACGATGTCATCGAAT`
+>        - and the 20 nuleotides before the W at position 286 in sequence `consensus_05_CHD8-III6mother-18`: `AGTCCTCTTAGTTTATAGAT`
+>
+> 8. {% tool [FASTQ masker](toolshed.g2.bx.psu.edu/repos/devteam/fastq_masker_by_quality/fastq_masker_by_quality/1.1.5) %} with the following parameters:
+>    - {% icon param-collection %} *"File to mask"*: `#Forward #Reverse collection` (output of **FASTQ groomer** {% icon tool %})
+>    - *"Mask input with"*: `Lowercase`
+>    - *"Quality score"*: `10`
+>   
+> 9. LA SUITE??????????????????????????????? 
+> 
 {: .hands_on}
 
 
