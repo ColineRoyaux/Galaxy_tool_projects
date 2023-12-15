@@ -138,6 +138,7 @@ Primers must be separated in distinct files because sense (forward) and antisens
 >
 > 3. Remove eventual gaps from primers {% tool [Degap.seqs](toolshed.g2.bx.psu.edu/repos/iuc/mothur_degap_seqs/mothur_degap_seqs/1.39.5.0) %} with the following parameters:
 >    {% snippet faqs/galaxy/tools_select_multiple_datasets.md %}
+>    
 >    - {% icon param-files %} *"fasta - Dataset"*: `Two Filter FASTA outputs` (outputs of **Filter FASTA** {% icon tool %})
 >
 {: .hands_on}
