@@ -403,12 +403,12 @@ When you have the consensus sequences, you can check if any ambiguous nucleotide
 
 > <details-title>Ambiguous nucleotide correspondance</details-title>
 >
-> Y = C or T
-> R = A or G
-> W = A or T
-> S = G or C
-> K = T or G
-> M = C or A
+> - Y = C or T
+> - R = A or G
+> - W = A or T
+> - S = G or C
+> - K = T or G
+> - M = C or A
 >
 {: .details}
 
