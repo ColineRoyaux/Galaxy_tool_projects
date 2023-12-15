@@ -330,7 +330,7 @@ See in the introduction for explanations on the Reverse-Complement.
 > <hands-on-title> Align and consensus </hands-on-title>
 >
 > 1. {% tool [Align sequences](toolshed.g2.bx.psu.edu/repos/iuc/qiime_align_seqs/qiime_align_seqs/1.9.1.0) %} with the following parameters:
->    - {% icon param-collection %} *"Input fasta file"*: `output` (output of **Tabular-to-FASTA** {% icon tool %})
+>    - {% icon param-collection %} *"Input fasta file"*: `output collection` (output of **Tabular-to-FASTA** {% icon tool %})
 >    - *"Method for aligning sequences"*: `clustalw`
 >    - *"Minimum percent sequence identity to closest blast hit to include sequence in alignment"*: `0.1`
 >
@@ -340,7 +340,37 @@ See in the introduction for explanations on the Reverse-Complement.
 >
 > 3. {% tool [Merge.files](toolshed.g2.bx.psu.edu/repos/iuc/mothur_merge_files/mothur_merge_files/1.39.5.0) %} with the following parameters:
 >    - *"Merge"*: `fasta files`
->        - {% icon param-collection %} *"inputs - fasta"*: `output` (output of **Consensus sequence from aligned FASTA** {% icon tool %})
+>        - {% icon param-collection %} *"inputs - fasta"*: `output collection` (output of **Consensus sequence from aligned FASTA** {% icon tool %})
+>
+{: .hands_on}
+
+# Manage primers and sequences 
+
+## Merge and align consensus sequences file and primer files
+
+> <hands-on-title> Merge and format consensus sequences + primers file </hands-on-title>
+>
+> 1. {% tool [Merge.files](toolshed.g2.bx.psu.edu/repos/iuc/mothur_merge_files/mothur_merge_files/1.39.5.0) %} with the following parameters:
+>    - *"Merge"*: `fasta files`
+>        - {% icon param-files %} *"inputs - fasta"*: `consensus sequences` (output of **Merge.files** {% icon tool %}), `Reverse primer` (output of **Reverse-Complement** {% icon tool %}), `Forward primer` (output of **Degap.seqs** {% icon tool %})
+>    - Remove tags "#Forward" and "#Reverse"
+>
+> 2. {% tool [Regex Find And Replace](toolshed.g2.bx.psu.edu/repos/galaxyp/regex_find_replace/regex1/1.0.3) %} with the following parameters:
+>    - {% icon param-file %} *"Select lines from"*: `output` (output of **Merge.files** {% icon tool %})
+>    - In *"Check"*:
+>        - {% icon param-repeat %} *"Insert Check"*
+>            - *"Find Regex"*: `([A-Z-])>`
+>            - *"Replacement"*: `\1\n>`
+>
+>    > <comment-title> What's going on in this second step? </comment-title>
+>    >
+>    > Sometimes, **Merge.files** {% icon tool %} doesn't keep linefeed between the files, this step permits to correct it and get a FASTA file that is formatted properly.
+>    > 
+>    > For the second step, we used regular expressions (Regex):
+>    > {% snippet  faqs/galaxy/analysis_regular_expressions.md %}
+>    > With `[A-Z-]` meaning any character between A to Z or -, `\1` repeat the character chain between brackets in the *"Find Regex"* section, `\n` meaning a line-feed. 
+>    > 
+>    {: .comment}
 >
 {: .hands_on}
 
@@ -359,7 +389,7 @@ When you have the consensus sequences, you can check if any ambiguous nucleotide
 
 > <hands-on-title> Look for ambiguous nucleotides </hands-on-title>
 >
-> 1. Click on output of **Merge.files** {% icon tool %} in the history to expand it
+> 1. Click on output of **Regex Find and Replace** {% icon tool %} in the history to expand it
 >
 > 2. Click on {% icon galaxy-barchat %} Visualize
 >
@@ -399,62 +429,53 @@ When you have the consensus sequences, you can check if any ambiguous nucleotide
 >    - {% icon param-collection %} *"File to mask"*: `#Forward #Reverse collection` (output of **FASTQ groomer** {% icon tool %})
 >    - *"Mask input with"*: `Lowercase`
 >    - *"Quality score"*: `10`
->   
-> 9. LA SUITE??????????????????????????????? 
+>      
+>   This tool displays low-quality bases in lowercase to permit better detection of potential errors.
+> 
+> 9. Open {% icon galaxy-eye %} `B05_CHD8-III6brother-18` output of **FASTQ masker** {% icon tool %} and ctrl+f : `CAGGCACGATGTCATCGAAT`.
+>    In the sense sequence (ID ending with 18F), this fragment is followed by a `c` in low-quality, whereas in the antisense sequence it is followed by a `T` in decent quality.
+>    Additionally, when looking into the {% icon galaxy-eye %} `#Consensus #Forward #Reverse #Primer` output of **Regex Find and Replace** {% icon tool %}, we can see the two other consensus sequences (`consensus_05_CHD8-III6mother-18` and `consensus_07_CHD8-III6-18`) have a `T` at this same position.
+>    It seems more likely that the nucleotide at position 121 in sequence `consensus_B05_CHD8-III6brother-18` is a `T`.
+>     
+> 10. Open {% icon galaxy-eye %} `05_CHD8-III6mother-18` outputs of **FASTQ masker** {% icon tool %} and ctrl+f : `AGTCCTCTTAGTTTATAGAT`.
+>     In the antisense sequence (ID ending with 18R), this fragment is followed by a `t` in low-quality, whereas in the sense sequence it is followed by a `A` in decent quality.
+>     Additionally, when looking into the {% icon galaxy-eye %} `#Consensus #Forward #Reverse #Primer` output of **Regex Find and Replace** {% icon tool %}, we can see the two other consensus sequences (`consensus_B05_CHD8-III6brother-18` and `consensus_07_CHD8-III6-18`) have a `A` at this same position.
+>     It seems more likely that the nucleotide at position 286 in sequence `consensus_05_CHD8-III6mother-18` is a `A`.
+>
+> 11. You can now correct them by clicking on output of **Regex Find and Replace** {% icon tool %} in the history to expand it
+>
+> 12. Click on {% icon galaxy-barchat %} Visualize
+>
+> 13. Select **Editor** and:
+>     - replace manually the `Y` with `T` in `consensus_B05_CHD8-III6brother-18`
+>     - replace manually the `W` with `A` in `consensus_05_CHD8-III6mother-18`
+>     and click on **export** 
 > 
 {: .hands_on}
 
-
-# Manage primers and sequences 
-
-## Merge and align consensus sequences file and primer files
-
-> <hands-on-title> Merge and format consensus sequences + primers file </hands-on-title>
->
-> 1. {% tool [Merge.files](toolshed.g2.bx.psu.edu/repos/iuc/mothur_merge_files/mothur_merge_files/1.39.5.0) %} with the following parameters:
->    - *"Merge"*: `fasta files`
->        - {% icon param-files %} *"inputs - fasta"*: `consensus sequences` (output of **Merge.files** {% icon tool %}), `Reverse primer` (output of **Reverse-Complement** {% icon tool %}), `Forward primer` (output of **Degap.seqs** {% icon tool %})
->
-> 2. {% tool [Regex Find And Replace](toolshed.g2.bx.psu.edu/repos/galaxyp/regex_find_replace/regex1/1.0.3) %} with the following parameters:
->    - {% icon param-file %} *"Select lines from"*: `output` (output of **Merge.files** {% icon tool %})
->    - In *"Check"*:
->        - {% icon param-repeat %} *"Insert Check"*
->            - *"Find Regex"*: `([A-Z-])>`
->            - *"Replacement"*: `\1\n>`
->
->    > <comment-title> What's going on in this second step? </comment-title>
->    >
->    > Sometimes, **Merge.files** {% icon tool %} doesn't keep linefeed between the files, this step permits to correct it and get a FASTA file that is formatted properly.
->    > 
->    > For the second step, we used regular expressions (Regex):
->    > {% snippet  faqs/galaxy/analysis_regular_expressions.md %}
->    > With `[A-Z-]` meaning any character between A to Z or -, `\1` repeat the character chain between brackets in the *"Find Regex"* section, `\n` meaning a line-feed. 
->    > 
->    {: .comment}
->
-{: .hands_on}
+Now, one can align its sequences with primers. Ultimately, it is common to cut sequences between primers to get the right fragment for each sequence.
 
 > <hands-on-title> Align sequences and primers </hands-on-title>
 >
 > 1. {% tool [Align sequences](toolshed.g2.bx.psu.edu/repos/iuc/qiime_align_seqs/qiime_align_seqs/1.9.1.0) %} with the following parameters:
->    - {% icon param-file %} *"Input fasta file"*: `out_file1` (output of **Regex Find And Replace** {% icon tool %})
+>    - {% icon param-file %} *"Input fasta file"*: `out_file1` **Regex Find And Replace (modified)**
 >    - *"Method for aligning sequences"*: `mafft`
 >    - *"Minimum percent sequence identity to closest blast hit to include sequence in alignment"*: `0.1`
 >
 {: .hands_on}
 
-## Check your samples hasn't been contaminated and your sequence belongs to the right group by computing a BLAST on the NCBI database
+## Check your sequences belongs to the right taxonomic group by computing a BLAST on the NCBI database
 
 > <hands-on-title> NVBI Blast </hands-on-title>
 >
 > 1. {% tool [NCBI BLAST+ blastn](toolshed.g2.bx.psu.edu/repos/devteam/ncbi_blast_plus/ncbi_blastn_wrapper/2.10.1+galaxy2) %} with the following parameters:
 >    - {% icon param-file %} *"Nucleotide query sequence(s)"*: `out_file1` (output of **Regex Find And Replace** {% icon tool %})
 >    - *"Subject database/sequences"*: `Locally installed BLAST database`
->        - *"Nucleotide BLAST database"*: ``
+>        - *"Nucleotide BLAST database"*: select most recent `nt_` database
 >    - *"Output format"*: `Tabular (select which columns)`
->        - *"Standard columns"*: ``
->        - *"Extended columns"*: ``
->        - *"Other identifier columns"*: ``
+>        - *"Standard columns"*: `qseqid`, `pident`, `mismatch` and `gapopen`
+>        - *"Extended columns"*: `gaps` and `salltitles`
+>        - *"Other identifier columns"*: `saccver`
 >    - *"Advanced Options"*: `Show Advanced Options`
 >        - *"Maximum hits to consider/show"*: `10`
 >        - *"Restrict search of database to a given set of ID's"*: `No restriction, search the entire database`
@@ -470,6 +491,8 @@ When you have the consensus sequences, you can check if any ambiguous nucleotide
 > {: .question}
 >
 {: .hands_on}
+
+It is a good practice to proceed to such checks, its permits to make sure the sequencing went as planned and your samples haven't been contaminated. 
 
 # Conclusion
 
