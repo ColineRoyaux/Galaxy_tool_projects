@@ -127,6 +127,8 @@ Primers must be separated in distinct files because sense (forward) and antisens
 >    - Add tags "#Primer" and "#Reverse"
 >    {% snippet faqs/galaxy/datasets_add_tag.md %}
 >
+>  {% snippet faqs/galaxy/tools_rerun.md %}
+>
 > 2. {% tool [Filter FASTA](toolshed.g2.bx.psu.edu/repos/galaxyp/filter_by_fasta_ids/filter_by_fasta_ids/2.3) %} with the following parameters:
 >    - {% icon param-file %} *"FASTA sequences"*: `Primer file`
 >    - *"Criteria for filtering on the headers"*: `Regular expression on the headers`
@@ -135,8 +137,8 @@ Primers must be separated in distinct files because sense (forward) and antisens
 >    {% snippet faqs/galaxy/datasets_add_tag.md %}
 >
 > 3. Remove eventual gaps from primers {% tool [Degap.seqs](toolshed.g2.bx.psu.edu/repos/iuc/mothur_degap_seqs/mothur_degap_seqs/1.39.5.0) %} with the following parameters:
->    - {% icon param-files %} *"fasta - Dataset"*: `Two Filter FASTA outputs` (outputs of **Filter FASTA** {% icon tool %})
 >    {% snippet faqs/galaxy/tools_select_multiple_datasets.md %}
+>    - {% icon param-files %} *"fasta - Dataset"*: `Two Filter FASTA outputs` (outputs of **Filter FASTA** {% icon tool %})
 >
 {: .hands_on}
 
@@ -242,7 +244,9 @@ In Sanger sequencing, ends tend to be of low trust levels (each nucleotide has a
 
 > <hands-on-title> AB1 to FASTQ files and trim low quality ends </hands-on-title>
 > 
-> Do these steps twice !! We have Froward and antisense (reverse) sequence data collections, do these steps starting with each "(filtered)" data collections
+> Do these steps twice !! We have Froward and antisense (reverse) sequence data collections, do these steps starting with each "(filtered)" data collections, this could help:
+> 
+>  {% snippet faqs/galaxy/tools_rerun.md %}
 >
 > 1. {% tool [ab1 to FASTQ converter](toolshed.g2.bx.psu.edu/repos/ecology/ab1_fastq_converter/ab1_fastq_converter/1.20.0) %} with the following parameters:
 >    - {% icon param-collection %} *"Input ab1 file"*: `(filtered) output collection` (output of **Filter collection** {% icon tool %})
@@ -284,6 +288,8 @@ See in the introduction for explanations on the Reverse-Complement.
 > <hands-on-title> Sort collections </hands-on-title>
 > 
 > Do this step twice !! One has to make sure sense (forward) and antisense (reverse) sequences collections are in the same order to get the right sense and the right antisense sequence to be merged together
+>
+>  {% snippet faqs/galaxy/tools_rerun.md %}
 >
 > 1. {% tool [Sort collection](__SORTLIST__) %} with the following parameters:
 >    - {% icon param-collection %} *"Input Collection"*: `Collection` (output of **seqtk_trimfq** {% icon tool %} & output of **Reverse-Complement** {% icon tool %})
