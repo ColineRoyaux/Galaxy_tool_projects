@@ -203,7 +203,9 @@ As for primers, sense and antisense sequences will be subjected to slightly diff
 >
 >    {% snippet faqs/galaxy/datasets_add_tag.md %}
 >
-> 3. {% tool [Regex Find And Replace](toolshed.g2.bx.psu.edu/repos/galaxyp/regex_find_replace/regex1/1.0.3) %} with the following parameters:
+>  {% snippet faqs/galaxy/tools_rerun.md %}
+>
+> 4. {% tool [Regex Find And Replace](toolshed.g2.bx.psu.edu/repos/galaxyp/regex_find_replace/regex1/1.0.3) %} with the following parameters:
 >    - {% icon param-file %} *"Select lines from"*: `output` (output of **Extract element identifiers** {% icon tool %})
 >    - In *"Check"*:
 >        - {% icon param-repeat %} *"Insert Check"*
@@ -214,13 +216,15 @@ As for primers, sense and antisense sequences will be subjected to slightly diff
 >
 >    {% snippet faqs/galaxy/datasets_add_tag.md %}
 >
-> 4. {% tool [Filter collection](__FILTER_FROM_FILE__) %} with the following parameters:
+> 5. {% tool [Filter collection](__FILTER_FROM_FILE__) %} with the following parameters:
 >    - {% icon param-collection %} *"Input Collection*: `output collection` (output of **Unzip** {% icon tool %})
 >    - *"How should the elements to remove be determined?"*: `Remove if identifiers are ABSENT from file`
 >        - {% icon param-file %} *"Filter out identifiers absent from"*: `#Forward files list` (output of **Regex Find And Replace** {% icon tool %})
 >    - Tag output with "#Forward"
->
-> 5. {% tool [Filter collection](__FILTER_FROM_FILE__) %} with the following parameters:
+>   
+>  {% snippet faqs/galaxy/tools_rerun.md %}
+>    
+> 7. {% tool [Filter collection](__FILTER_FROM_FILE__) %} with the following parameters:
 >    - {% icon param-collection %} *"Input Collection*: `output collection` (output of **Unzip** {% icon tool %})
 >    - *"How should the elements to remove be determined?"*: `Remove if identifiers are ABSENT from file`
 >        - {% icon param-file %} *"Filter out identifiers absent from"*: `#Reverse files list` (output of **Regex Find And Replace** {% icon tool %})
