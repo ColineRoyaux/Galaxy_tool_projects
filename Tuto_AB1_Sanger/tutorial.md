@@ -524,3 +524,7 @@ It is a good practice to proceed to such checks, its permits to make sure the se
 # Conclusion
 
 We successfully cleaned AB1 sequence files !
+
+# AOPEP Sanger files
+
+The history following the same steps but for AOPEP marker files is available [here](https://usegalaxy.fr/u/coline_royaux/h/tuto-sanger-w-aopep)
