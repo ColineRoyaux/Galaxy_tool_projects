@@ -427,7 +427,7 @@ When you have the consensus sequences, you can check if any ambiguous nucleotide
 > 6. You need to go back to your FASTQ sequences to understand the origin of the ambiguity
 >
 > 7. {% tool [Regex Find And Replace](toolshed.g2.bx.psu.edu/repos/galaxyp/regex_find_replace/regex1/1.0.3) %} with the following parameters:
->    - {% icon param-file %} *"Select lines from"*: `#Consensus #Forward #Reverse #Primer output` (output of **Regex Find and Replace** {% icon tool %})
+>    - {% icon param-file %} *"Select lines from"*: `#Consensus #Primer output` (output of **Regex Find and Replace** {% icon tool %})
 >    - In *"Check"*:
 >        - {% icon param-repeat %} *"Insert Check"*
 >            - *"Find Regex"*: `^[ACTG]+([ACTG]{20}Y)[ACTG]+$`
@@ -461,12 +461,12 @@ When you have the consensus sequences, you can check if any ambiguous nucleotide
 > 
 > 9. Open {% icon galaxy-eye %} `B05_CHD8-III6brother-18` output of **FASTQ masker** {% icon tool %} and ctrl+f : `CAGGCACGATGTCATCGAAT`.
 >    In the sense sequence (ID ending with 18F), this fragment is followed by a `c` in low-quality, whereas in the antisense sequence it is followed by a `T` in decent quality.
->    Additionally, when looking into the {% icon galaxy-eye %} `#Consensus #Forward #Reverse #Primer` output of **Regex Find and Replace** {% icon tool %}, we can see the two other consensus sequences (`consensus_05_CHD8-III6mother-18` and `consensus_07_CHD8-III6-18`) have a `T` at this same position.
+>    Additionally, when looking into the {% icon galaxy-eye %} `#Consensus #Primer` output of **Regex Find and Replace** {% icon tool %}, we can see the two other consensus sequences (`consensus_05_CHD8-III6mother-18` and `consensus_07_CHD8-III6-18`) have a `T` at this same position.
 >    It seems more likely that the nucleotide at position 121 in sequence `consensus_B05_CHD8-III6brother-18` is a `T`.
 >     
 > 10. Open {% icon galaxy-eye %} `05_CHD8-III6mother-18` outputs of **FASTQ masker** {% icon tool %} and ctrl+f : `AGTCCTCTTAGTTTATAGAT`.
 >     In the antisense sequence (ID ending with 18R), this fragment is followed by a `t` in low-quality, whereas in the sense sequence it is followed by a `A` in decent quality.
->     Additionally, when looking into the {% icon galaxy-eye %} `#Consensus #Forward #Reverse #Primer` output of **Regex Find and Replace** {% icon tool %}, we can see the two other consensus sequences (`consensus_B05_CHD8-III6brother-18` and `consensus_07_CHD8-III6-18`) have a `A` at this same position.
+>     Additionally, when looking into the {% icon galaxy-eye %} `#Consensus #Primer` output of **Regex Find and Replace** {% icon tool %}, we can see the two other consensus sequences (`consensus_B05_CHD8-III6brother-18` and `consensus_07_CHD8-III6-18`) have a `A` at this same position.
 >     It seems more likely that the nucleotide at position 286 in sequence `consensus_05_CHD8-III6mother-18` is a `A`.
 >
 > 11. You can now correct them by clicking on output of **Regex Find and Replace** {% icon tool %} in the history to expand it
