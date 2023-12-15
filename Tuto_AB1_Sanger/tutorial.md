@@ -223,23 +223,17 @@ As for primers, sense and antisense sequences will be subjected to slightly diff
 > 5. {% tool [Filter collection](__FILTER_FROM_FILE__) %} with the following parameters:
 >    - {% icon param-collection %} *"Input Collection*: `output collection` (output of **Unzip** {% icon tool %})
 >    - *"How should the elements to remove be determined?"*: `Remove if identifiers are ABSENT from file`
->        - {% icon param-file %} *"Filter out identifiers absent from"*: `#Forward files list` (output of **Regex Find And Replace** {% icon tool %})
->    - Tag output with "#Forward"
->   
->  {% snippet faqs/galaxy/tools_rerun.md %}
->    
-> 7. {% tool [Filter collection](__FILTER_FROM_FILE__) %} with the following parameters:
->    - {% icon param-collection %} *"Input Collection*: `output collection` (output of **Unzip** {% icon tool %})
->    - *"How should the elements to remove be determined?"*: `Remove if identifiers are ABSENT from file`
->        - {% icon param-file %} *"Filter out identifiers absent from"*: `#Reverse files list` (output of **Regex Find And Replace** {% icon tool %})
->    - Tag output with "#Reverse"
+>        - {% icon param-files %} *"Filter out identifiers absent from"*: `#Forward files list` & `#Reverse files list` (output of **Regex Find And Replace** {% icon tool %})
+>    - Tag `(filtered)` outputs with "#Forward" and "#Reverse"
 >
+>    {% snippet faqs/galaxy/datasets_add_tag.md %}
+>    
 >    > <comment-title> What's happening in this section? </comment-title>
 >    >
 >    > First step: Extracting the list of file names in the data collection
 >    > Second step: Removing file names containing a "F" and "AOPEP" -> creating a list of antisense (reverse) sequence files of the marker CHD8
 >    > Third step: Removing file names containing a "R" and "AOPEP" -> creating a list of sense (forward) sequence files of the marker CHD8
->    > Fourth and fifth step: Select files in the collection -> creating two distinct collections with sense (forward) sequence files on one hand and antisense (reverse) sequence file on the other hand
+>    > Fourth step: Select files in the collection -> creating two distinct collections with sense (forward) sequence files on one hand and antisense (reverse) sequence file on the other hand
 >    >
 >    > For the second and third step, we used regular expressions (Regex):
 >    > 
