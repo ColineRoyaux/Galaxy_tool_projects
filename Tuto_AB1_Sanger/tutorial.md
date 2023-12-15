@@ -310,8 +310,8 @@ See in the introduction for explanations on the Reverse-Complement.
 > <hands-on-title> Merge sense (forward) and antisense (reverse) sequence files </hands-on-title>
 >
 > 1. {% tool [seqtk_mergepe](toolshed.g2.bx.psu.edu/repos/iuc/seqtk/seqtk_mergepe/1.3.1) %} with the following parameters:
->    - {% icon param-file %} *"Input FASTA/Q file #1"*: `output` (output of **Sort collection** {% icon tool %})
->    - {% icon param-file %} *"Input FASTA/Q file #2"*: `output` (output of **Sort collection** {% icon tool %})
+>    - {% icon param-collection %} *"Input FASTA/Q file #1"*: `output` (output of **Sort collection** {% icon tool %})
+>    - {% icon param-collection %} *"Input FASTA/Q file #2"*: `output` (output of **Sort collection** {% icon tool %})
 >
 > Check there is two sequences in each three files of the newly-created collection.
 >
