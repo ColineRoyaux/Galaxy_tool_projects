@@ -98,6 +98,10 @@ Authors of {% cite Garavaglia2022 %} have shared openly their raw AB1 files on Z
 >    GAGGTGAAAGAATCATAAATTGG
 >    >Reverse_CHD8
 >    CCCTGTGTACAAATAGCTTTTGT
+>    >Forward_AOPEP
+>    TCATGGTTCCAGGCAGAGTTATT
+>    >Reverse_AOPEP
+>    GACAAGCCAACCAATGGCAATGT
 >    ```
 >    - Open the Galaxy Upload Manager ({% icon galaxy-upload %} on the top-right of the tool panel)
 >    - Select **Paste/Fetch Data**
