@@ -373,6 +373,9 @@ See in the introduction for explanations on the Reverse-Complement.
 > 1. {% tool [Merge.files](toolshed.g2.bx.psu.edu/repos/iuc/mothur_merge_files/mothur_merge_files/1.39.5.0) %} with the following parameters:
 >    - *"Merge"*: `fasta files`
 >        - {% icon param-files %} *"inputs - fasta"*: `consensus sequences` (output of **Merge.files** {% icon tool %}), `Reverse primer` (output of **Reverse-Complement** {% icon tool %}), `Forward primer` (output of **Degap.seqs** {% icon tool %})
+> 
+>    {% snippet tools_select_multiple_datasets.md %}
+> 
 >    - Remove tags "#Forward" and "#Reverse"
 >
 > 2. {% tool [Regex Find And Replace](toolshed.g2.bx.psu.edu/repos/galaxyp/regex_find_replace/regex1/1.0.3) %} with the following parameters:
