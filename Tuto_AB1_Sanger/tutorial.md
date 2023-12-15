@@ -108,6 +108,9 @@ Authors of {% cite Garavaglia2022 %} have shared openly their raw AB1 files on Z
 >    - Change the name from "New File" to "Primer file"
 >    - Click **Start**
 >
+>      
+>    Note these primer sequences were invented for the purpose of the tutorial, it is not the sequences used in the publication.
+>
 {: .hands_on}
 
 # Prepare primer data
