@@ -83,14 +83,12 @@ Authors of {% cite Garavaglia2022 %} have shared openly their raw AB1 files on Z
 >    ```
 >    https://zenodo.org/records/7104640/files/AOPEP_and_CHD8_sequences_20220907.zip?download=1
 >    ```
->
+>    
+>    Change **Type (set all):** from "Auto-detect" to `zip` and click **Start**
+>    
 >    {% snippet faqs/galaxy/datasets_import_via_link.md %}
 >
 >    {% snippet faqs/galaxy/datasets_import_from_data_library.md %}
->
-> 3. Check that the data format is 'zip'
->
->    {% snippet faqs/galaxy/datasets_change_datatype.md datatype="datatypes" %}
 >
 > 4. Create primer FASTA file, copy:
 >    ```
