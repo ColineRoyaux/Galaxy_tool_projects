@@ -125,6 +125,7 @@ Primers must be separated in distinct files because sense (forward) and antisens
 >    - *"Criteria for filtering on the headers"*: `Regular expression on the headers`
 >        - *"Regular expression pattern the header should match"*: `Reverse_CHD8`
 >    - Add tags "#Primer" and "#Reverse"
+>      
 >    {% snippet faqs/galaxy/datasets_add_tag.md %}
 >
 >  {% snippet faqs/galaxy/tools_rerun.md %}
@@ -134,9 +135,11 @@ Primers must be separated in distinct files because sense (forward) and antisens
 >    - *"Criteria for filtering on the headers"*: `Regular expression on the headers`
 >        - *"Regular expression pattern the header should match"*: `Forward_CHD8`
 >    - Add tags "#Primer" and "#Forward"
+>      
 >    {% snippet faqs/galaxy/datasets_add_tag.md %}
 >
 > 3. Remove eventual gaps from primers {% tool [Degap.seqs](toolshed.g2.bx.psu.edu/repos/iuc/mothur_degap_seqs/mothur_degap_seqs/1.39.5.0) %} with the following parameters:
+>    
 >    {% snippet faqs/galaxy/tools_select_multiple_datasets.md %}
 >    
 >    - {% icon param-files %} *"fasta - Dataset"*: `Two Filter FASTA outputs` (outputs of **Filter FASTA** {% icon tool %})
@@ -179,6 +182,7 @@ This following hands-on is to be applied only on the sequence of the antisense (
 {: .hands_on}
 
 From now on, we'll be working a lot on data collections:
+
 {% snippet faqs/galaxy/tools_select_collection.md %}
 
 ## Filter collection to separate sense and antisense sequence files
@@ -232,7 +236,9 @@ As for primers, sense and antisense sequences will be subjected to slightly diff
 >    > Fourth and fifth step: Select files in the collection -> creating two distinct collections with sense (forward) sequence files on one hand and antisense (reverse) sequence file on the other hand
 >    >
 >    > For the second and third step, we used regular expressions (Regex):
+>    > 
 >    > {% snippet  faqs/galaxy/analysis_regular_expressions.md %}
+>    > 
 >    > With `[A-Za-z0-9_-]` meaning any character between A to Z, a to z, 0 to 9 or _ or -, the following `+` meaning that any of these characters are found once or more. 
 >    > 
 >    {: .comment}
@@ -378,7 +384,9 @@ See in the introduction for explanations on the Reverse-Complement.
 >    > Sometimes, **Merge.files** {% icon tool %} doesn't keep linefeed between the files, this step permits to correct it and get a FASTA file that is formatted properly.
 >    > 
 >    > For the second step, we used regular expressions (Regex):
+>    > 
 >    > {% snippet  faqs/galaxy/analysis_regular_expressions.md %}
+>    > 
 >    > With `[A-Z-]` meaning any character between A to Z or -, `\1` repeat the character chain between brackets in the *"Find Regex"* section, `\n` meaning a line-feed. 
 >    > 
 >    {: .comment}
@@ -427,7 +435,9 @@ When you have the consensus sequences, you can check if any ambiguous nucleotide
 >    > We want to retrieve the 20 nucleotides before the ambiguities.
 >    > 
 >    > We use regular expressions (Regex):
+>    > 
 >    > {% snippet  faqs/galaxy/analysis_regular_expressions.md %}
+>    > 
 >    > With `[ACTG]` meaning any character of the four unambiguous nucleotides followed by `+` meaning "at least once in the character chain" or by {20} meaning "20 times".
 >    > 
 >    {: .comment}
