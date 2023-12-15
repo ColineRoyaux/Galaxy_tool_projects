@@ -88,7 +88,7 @@ Authors of {% cite Garavaglia2022 %} have shared openly their raw AB1 files on Z
 >
 >    {% snippet faqs/galaxy/datasets_import_from_data_library.md %}
 >
-> 3. Check that the datatype is '.zip'
+> 3. Check that the data format is 'zip'
 >
 >    {% snippet faqs/galaxy/datasets_change_datatype.md datatype="datatypes" %}
 >
