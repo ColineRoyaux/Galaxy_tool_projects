@@ -275,7 +275,7 @@ See in the introduction for explanations on the Reverse-Complement.
 > <hands-on-title> Reverse complement </hands-on-title>
 >
 > 1. {% tool [FASTQ Groomer](toolshed.g2.bx.psu.edu/repos/devteam/fastq_groomer/fastq_groomer/1.1.5) %} with the following parameters:
->    - {% icon param-collection %} *"File to groom"*: `output collection` (output of **seqtk_trimfq** {% icon tool %})
+>    - {% icon param-collection %} *"File to groom"*: `#Reverse output collection` (output of **seqtk_trimfq** {% icon tool %})
 >    - *"Advanced Options"*: `Show Advanced Options`
 >        - *"Summarize input data"*: `Do not Summarize Input (faster)`
 >
@@ -285,7 +285,7 @@ See in the introduction for explanations on the Reverse-Complement.
 >    {: .comment}
 >
 > 2. {% tool [Reverse-Complement](toolshed.g2.bx.psu.edu/repos/devteam/fastx_reverse_complement/cshl_fastx_reverse_complement/1.0.2+galaxy0) %} with the following parameters:
->    - {% icon param-collection %} *"Input file in FASTA or FASTQ format"*: `output collection` (output of **FASTQ Groomer** {% icon tool %})
+>    - {% icon param-collection %} *"Input file in FASTA or FASTQ format"*: `#Reverse output collection` (output of **FASTQ Groomer** {% icon tool %})
 >
 >
 {: .hands_on}
