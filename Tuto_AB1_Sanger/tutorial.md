@@ -197,8 +197,10 @@ As for primers, sense and antisense sequences will be subjected to slightly diff
 >    - In *"Check"*:
 >        - {% icon param-repeat %} *"Insert Check"*
 >            - *"Find Regex"*: `^[A-Za-z0-9_-]+F$`
+>            - *"Replacement"*: ``
 >        - {% icon param-repeat %} *"Insert Check"*
 >            - *"Find Regex"*: `^[A-Za-z0-9_-]+AOPEP[A-Za-z0-9_-]+$`
+>            - *"Replacement"*: ``
 >    - Tag output with "#Reverse"
 >
 >    {% snippet faqs/galaxy/datasets_add_tag.md %}
@@ -210,8 +212,10 @@ As for primers, sense and antisense sequences will be subjected to slightly diff
 >    - In *"Check"*:
 >        - {% icon param-repeat %} *"Insert Check"*
 >            - *"Find Regex"*: `^[A-Za-z0-9_-]+R$`
+>            - *"Replacement"*: ``
 >        - {% icon param-repeat %} *"Insert Check"*
 >            - *"Find Regex"*: `^[A-Za-z0-9_-]+AOPEP[A-Za-z0-9_-]+$`
+>            - *"Replacement"*: ``
 >    - Tag output with "#Forward"
 >
 >    {% snippet faqs/galaxy/datasets_add_tag.md %}
